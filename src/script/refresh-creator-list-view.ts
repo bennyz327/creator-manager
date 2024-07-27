@@ -1,20 +1,17 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import constrant from '../constrant';
+import { schema_creator_identities, schema_creators } from './types';
 
-export interface Row {
-    creator_id: number;
-    display_name: string;
-    scoped_id: number;
-    scoped_name: string;
+type JoinRow = schema_creator_identities & {
     start_at: string;
     end_at: string;
 }
 
-export interface AggregatedData {
-    creator_id: number;
-    start_at: string;
-    end_at: string;
+type AggregatedData = {
+    creatorId: number;
+    startAt: string;
+    endAt: string;
     scoped: { [key: string]: { scoped_id: number, display_names: string[] } };
 }
 
@@ -40,7 +37,7 @@ const refreshList = async () => {
         driver: sqlite3.Database
     });
 
-    const rows: Row[] = await db.all(query);
+    const rows: JoinRow[] = await db.all(query);
 
     const aggregatedData: { [key: string]: AggregatedData } = {};
 
@@ -49,9 +46,9 @@ const refreshList = async () => {
         const key = `${creator_id}_${start_at}_${end_at}`;
         if (!aggregatedData[key]) {
             aggregatedData[key] = {
-                creator_id,
-                start_at,
-                end_at,
+                creatorId: creator_id,
+                startAt: start_at,
+                endAt: end_at,
                 scoped: {}
             };
         }
@@ -68,11 +65,11 @@ const refreshList = async () => {
     const allColumns: Set<string> = new Set(['creator_id', 'start_at', 'end_at']);
     
     for (const key in aggregatedData) {
-        const { creator_id, start_at, end_at, scoped } = aggregatedData[key];
+        const { creatorId, startAt, endAt, scoped } = aggregatedData[key];
         const row: { [key: string]: string | number } = {
-            creator_id,
-            start_at,
-            end_at
+            creator_id: creatorId,
+            start_at: startAt,
+            end_at: endAt
         };
 
         for (const scoped_name in scoped) {
