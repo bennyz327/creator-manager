@@ -2,6 +2,7 @@ import { select } from '@inquirer/prompts';
 import refreshList from './script/refresh-creator-list-view';
 import browseData from './script/browse-data';
 import { sleep } from './common/utils';
+import { getDbConnect } from './script/connect';
 
 const menu = async () => {
     const question = {
@@ -26,6 +27,7 @@ const menu = async () => {
         await browseData();
         await sleep(1);
     } else if (answers === 'exit') {
+        await (await getDbConnect()).close();
         console.log('退出成功');
         process.exit(0);
     }

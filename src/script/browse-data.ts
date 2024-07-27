@@ -1,13 +1,7 @@
-import sqlite3 from 'sqlite3';
-import { open, type Database } from 'sqlite';
+import { type Database } from 'sqlite';
 import { select } from '@inquirer/prompts';
-import constrant from '../common/constrant';
 import { printTable } from 'console-table-printer';
-
-const dbPromise = open<sqlite3.Database, sqlite3.Statement>({
-    filename: constrant.DB_NAME,
-    driver: sqlite3.Database
-});
+import { getDbConnect } from './connect';
 
 const pageSize = 10;
 
@@ -85,7 +79,7 @@ const viewCreatorData = async (db: Database) => {
 };
 
 const browseData = async () => {
-    const db = await dbPromise;
+    let db = await getDbConnect();
 
     const choices = await listTables(db);
     choices.push({
@@ -104,8 +98,6 @@ const browseData = async () => {
     } else {
         await viewTableData(db, tableChoice);
     }
-
-    await db.close();
 }
 
 export default browseData;
