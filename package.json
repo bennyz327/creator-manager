@@ -1,0 +1,24 @@
+{
+  "name": "creator-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx tsc && node .\\dist\\index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.14.12",
+    "@types/sqlite3": "^3.1.11",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^5.3.2",
+    "console-table-printer": "^2.12.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}
