@@ -1,6 +1,6 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
-import constrant from '../constrant';
+import constrant from '../common/constrant';
 import { schema_creator_identities, schema_creators } from './types';
 
 type JoinRow = schema_creator_identities & {

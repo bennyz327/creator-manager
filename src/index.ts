@@ -1,7 +1,7 @@
 import { select } from '@inquirer/prompts';
 import refreshList from './script/refresh-creator-list-view';
-import { sleep } from './utils';
 import browseData from './script/browse-data';
+import { sleep } from './common/utils';
 
 const menu = async () => {
     const question = {

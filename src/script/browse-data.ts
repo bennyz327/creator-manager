@@ -1,7 +1,7 @@
 import sqlite3 from 'sqlite3';
 import { open, type Database } from 'sqlite';
 import { select } from '@inquirer/prompts';
-import constrant from '../constrant';
+import constrant from '../common/constrant';
 import { printTable } from 'console-table-printer';
 
 const dbPromise = open<sqlite3.Database, sqlite3.Statement>({
