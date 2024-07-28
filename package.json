@@ -28,10 +28,6 @@
   },
   "bin": "dist/index.js",
   "pkg": {
-    "scripts": "dist/**/*.js",
-    "assets": [
-      "node_modules/sqlite3/**/*",
-      "node_modules/inquirer/**/*"
-    ]
+    "scripts": "dist/**/*.js"
   }
 }
