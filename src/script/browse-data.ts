@@ -2,8 +2,8 @@ import { type Database } from 'sqlite';
 import { select } from '@inquirer/prompts';
 import { printTable } from 'console-table-printer';
 import { getDbConnect } from './connect';
-
-const pageSize = 10;
+import constrant from '../common/constrant';
+import { showEndSelection } from '../common/utils';
 
 const listTables = async (db: Database) => {
     const query = "SELECT name FROM sqlite_master WHERE type='table'";
@@ -22,7 +22,8 @@ const viewTableData = async (db: Database, tableName: string) => {
     let hasNextPage = true;
 
     while (hasNextPage) {
-        const query = `SELECT * FROM ${tableName} LIMIT ${pageSize} OFFSET ${offset}`;
+        hasNextPage = false
+        const query = `SELECT * FROM ${tableName} LIMIT ${constrant.DB_PAGE_SIZE} OFFSET ${offset}`;
         const rows = await db.all(query);
 
         console.table(rows);
@@ -53,7 +54,7 @@ const viewCreatorData = async (db: Database) => {
 
     while (hasNextPage) {
         hasNextPage = false
-        const query = `SELECT * FROM creator_details LIMIT ${pageSize} OFFSET ${offset}`;
+        const query = `SELECT * FROM creator_details LIMIT ${constrant.DB_PAGE_SIZE} OFFSET ${offset}`;
         const rows = await db.all(query);
 
         printTable(rows);
@@ -78,7 +79,7 @@ const viewCreatorData = async (db: Database) => {
     }
 };
 
-const browseData = async () => {
+export const browseData = async () => {
     let db = await getDbConnect();
 
     const choices = await listTables(db);
@@ -98,6 +99,11 @@ const browseData = async () => {
     } else {
         await viewTableData(db, tableChoice);
     }
+    await showEndSelection();
 }
 
-export default browseData;
+export const browseCreatorList = async () => {
+    let db = await getDbConnect()
+    await viewCreatorData(db)
+    await showEndSelection()
+}

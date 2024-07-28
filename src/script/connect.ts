@@ -12,8 +12,12 @@ const dbInit = async () => {
     db = await open(config);
 }
 
-const dbClose = async () => {
-    await db.close();
+export const closeDbConnect = async () => {
+    if (db) {
+        console.log('資料庫關閉中');
+        await db.close();
+        console.log('資料庫關閉完成');
+    }
 }
 
 export const getDbConnect = async () => {

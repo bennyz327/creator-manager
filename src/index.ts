@@ -1,40 +1,96 @@
 import { select } from '@inquirer/prompts';
 import refreshList from './script/refresh-creator-list-view';
-import browseData from './script/browse-data';
-import { sleep } from './common/utils';
-import { getDbConnect } from './script/connect';
+import { browseData, browseCreatorList } from './script/browse-data';
+import { closeDbConnect } from './script/connect';
+import searchCreatorAndShow from './script/search-creator';
+import addNewIdentity from './script/post-creator-identify';
+
+// fix ES2022 method not found
+if (!Array.prototype.findLastIndex) {
+    Array.prototype.findLastIndex = function<T>(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: any): number {
+      for (let i = this.length - 1; i >= 0; i--) {
+        if (predicate.call(thisArg, this[i], i, this)) {
+          return i;
+        }
+      }
+      return -1;
+    };
+  }
+
+type MenuChoices = {
+    name: string;
+    value:    'searchCreator'
+            | 'createNewIdentity'
+            | 'browseCreatorList'
+            | 'browseDb'
+            | 'rebuild'
+            | 'exit'
+}
 
 const menu = async () => {
+
+    let choices: MenuChoices[] = [
+        { name: '瀏覽創作者列表', value: 'browseCreatorList'},
+        { name: '搜尋創作者', value: 'searchCreator'},
+        { name: '新增創作者身份', value: 'createNewIdentity'},
+        { name: '瀏覽資料庫 (DEBUG)', value: 'browseDb' },
+        { name: '刷新創作者列表 (DEBUG)', value: 'rebuild' },
+        { name: '退出創作者管理員', value: 'exit' }
+    ]
+
     const question = {
         type: 'list',
         name: 'action',
-        message: 'Choose an action:',
-        choices: [
-            { name: '刷新創作者列表', value: 'rebuild' },
-            { name: '瀏覽資料庫 (DEBUG)', value: 'browse' },
-            { name: '退出', value: 'exit' }
-        ]
+        message: '創作者管理員 v1.0.0\n請選擇操作',
+        choices,
     };
 
-    const answers = await select(question);
+    const answer = await select(question);
 
-    if (answers === 'rebuild') {
-        console.log('重建中...');
-        await refreshList();
-        await sleep(1);
-        console.log('重建成功');
-    } else if (answers === 'browse') {
-        await browseData();
-        await sleep(1);
-    } else if (answers === 'exit') {
-        await (await getDbConnect()).close();
-        console.log('退出成功');
-        process.exit(0);
+    switch (answer) {
+
+        case 'searchCreator':
+            await searchCreatorAndShow();
+            break;
+
+        case 'createNewIdentity':
+            await addNewIdentity();
+            break;
+
+        case 'browseCreatorList':
+            await browseCreatorList();
+            break;
+
+        case 'browseDb':
+            await browseData();
+            break;
+
+        case 'rebuild':
+            console.log('重建中...');
+            await refreshList();
+            console.log('重建成功');
+            break;
+
+        case 'exit':
+            await closeDbConnect();
+            console.log("退出完成");
+            process.exit(0);
+
+        default:
+            console.log('無效選項');
     }
 };
 
 (async () => {
-    while (true) {
-        await menu();
+    try {
+        while (true) {
+            process.stdout.write('\x1Bc')
+            await menu();
+        }
+    } catch (error) {
+        console.log('發生錯誤');
+        console.log(error);
+        await closeDbConnect();
+        process.exit(1);
     }
 })();

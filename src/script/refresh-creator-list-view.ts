@@ -1,9 +1,9 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import constrant from '../common/constrant';
-import { schema_creator_identities, schema_creators } from './types';
+import { SCHEMA_creator_identities } from './types';
 
-type JoinRow = schema_creator_identities & {
+type JoinRow = SCHEMA_creator_identities & {
     start_at: string;
     end_at: string;
 }
