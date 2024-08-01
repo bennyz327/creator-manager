@@ -4,7 +4,6 @@
   "description": "A Creator Metadata Manager on command line",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx tsc && node .\\dist\\index.js",
     "build": "tsc",
     "pkg": "npm run build && pkg . --targets node16-win-x64 --output lib/creator-manager.exe"
